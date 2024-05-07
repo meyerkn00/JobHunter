@@ -50,7 +50,14 @@ with sync_playwright() as p:
     browser.close()
 
 results = str(soup.ul.find_all("a"))
+result_elements = soup.ul.find_all("a")
 
-# Finds link
-names = re.findall(r'/en-US.*?"', results)
-links = re.findall(r'>[A-Za-z].*?<', results)
+# Regex finds job names and links from soup
+links = re.findall(r'/en-US.*?"', results)
+names = re.findall(r'>[A-Za-z].*?<', results)
+
+# print(names.rstrip('<>'))
+# print(links.removesuffix('/"'))
+    
+print([re.sub('<>', "", x) for x in names])
+print([re.sub('/"', "", x) for x in links])
