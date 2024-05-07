@@ -45,6 +45,7 @@ with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page()
     page.goto(URL)
+    # TO DO: Fix the sleep to be dynamically triggered by a body element loading
     sleep(2)
     soup = BeautifulSoup(page.content(), 'lxml')
     browser.close()
@@ -53,11 +54,11 @@ results = str(soup.ul.find_all("a"))
 result_elements = soup.ul.find_all("a")
 
 # Regex finds job names and links from soup
-links = re.findall(r'/en-US.*?"', results)
-names = re.findall(r'>[A-Za-z].*?<', results)
+links = re.findall(r'(/en-US.*?)"', results)
+names = re.findall(r'>([A-Za-z].*?)<', results)
 
-# print(names.rstrip('<>'))
-# print(links.removesuffix('/"'))
+print(links)
+print(names)
     
-print([re.sub('<>', "", x) for x in names])
-print([re.sub('/"', "", x) for x in links])
+# print([re.sub('<>', "", x) for x in names])
+# print([re.sub('/"', "", x) for x in links])
