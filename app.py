@@ -1,4 +1,5 @@
-import requests
+# import requests
+import re
 from time import sleep
 from dataclasses import dataclass
 from bs4 import BeautifulSoup
@@ -18,7 +19,7 @@ from playwright.sync_api import sync_playwright
 
 # Output class
 
-class Company
+class Company:
     def __init__(self, name):
         self.name = name
         self.joblist = []
@@ -28,12 +29,13 @@ class Company
     
     def bundle(self, joblist):
         # for each Job, take results and put into text output for email
+        pass
 
 @dataclass
 class Job:
     title: str
     link: str
-    location: str
+    # location: str
 
 # Penn Demo using playwright
 
@@ -47,5 +49,8 @@ with sync_playwright() as p:
     soup = BeautifulSoup(page.content(), 'lxml')
     browser.close()
 
-results = soup.find("ul")
-print(results)
+results = str(soup.ul.find_all("a"))
+
+# Finds link
+names = re.findall(r'/en-US.*?"', results)
+links = re.findall(r'>[A-Za-z].*?<', results)
