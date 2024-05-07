@@ -1,5 +1,6 @@
 import requests
 from time import sleep
+from dataclasses import dataclass
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
@@ -14,6 +15,25 @@ from playwright.sync_api import sync_playwright
 # results = soup.find("ul")
 
 #print(soup)
+
+# Output class
+
+class Company
+    def __init__(self, name):
+        self.name = name
+        self.joblist = []
+    
+    def add_job(self, joblist):
+        self.joblist.append(joblist)
+    
+    def bundle(self, joblist):
+        # for each Job, take results and put into text output for email
+
+@dataclass
+class Job:
+    title: str
+    link: str
+    location: str
 
 # Penn Demo using playwright
 
