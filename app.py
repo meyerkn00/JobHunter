@@ -57,6 +57,7 @@ names = re.findall(r'>([A-Za-z].*?)<', results)
 Penn = Company("Penn")
 
 for i in range(5):
+    # This is just to catch if there are less than 6 jobs on a page
     if names[i] == [] or links[i] == [] :
         x = Job(title = "null", link = "null")
     else:
