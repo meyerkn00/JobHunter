@@ -55,7 +55,7 @@ result_elements = soup.ul.find_all("a")
 
 # Regex finds job names and links from soup
 #add href="()
-links = re.findall(r'(/en-US.*?)"', results)
+links = re.findall(r'href="(/en-US.*?)"', results)
 names = re.findall(r'>([A-Za-z].*?)<', results)
 
 print(links)
