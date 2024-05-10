@@ -14,4 +14,5 @@ pip install requests
 # If requests works, playwright is unnecessary
 pip install pytest-playwright
 playwright install
+pip install simplegmail
 ``'
