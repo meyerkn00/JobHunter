@@ -14,7 +14,8 @@ from simplegmail import Gmail
 ## Outside of central loop definitions
 
 # Output class
-"""The following class takes a name input and creates
+"""
+    The following class takes a name input and creates
         1. Joblist to store job results
         2. function to add to joblist
         3. bundle function to take all job lists and assemble into string for email
@@ -42,7 +43,8 @@ class Job:
 ## All of this will go within a loop
 # Penn Demo using playwright
 
-"""Generic function for pulling website html
+"""
+    Generic function for pulling website html
         Takes URL arg
         returns html in soup form
 """
@@ -101,7 +103,7 @@ def pennanalyze():
 # application with the command-line parameter
 #  --noauth_local_webserver
 
-def sendreport():
+def sendreport(job1):
     gmail = Gmail()
 
     todays_date = date.today()
@@ -112,8 +114,14 @@ def sendreport():
         "subject": f'Job Hunter Report {todays_date}',
         "msg_html": f'<h1>Job Report {todays_date}</h1><br />'\
                     '<p>Today\'s Job Report is as follows:</p><br />'\
-                    f'<h2>{Penn.name}</h2><br />'\
-                    f'{Penn.bundle()}'
+                    f'<h2>{job1.name}</h2><br />'\
+                    f'{job1.bundle()}'
     }
 
     message = gmail.send_message(**params)
+
+# What will become the main loop
+
+penndata = pennanalyze()
+
+sendreport(penndata)
