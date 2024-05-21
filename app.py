@@ -42,38 +42,55 @@ class Job:
 ## All of this will go within a loop
 # Penn Demo using playwright
 
-URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
+"""Generic function for pulling website html
+        Takes URL arg
+        returns html in soup form
+"""
 
-with sync_playwright() as p:
-    browser = p.chromium.launch()
-    page = browser.new_page()
-    page.goto(URL)
-    # TO DO: Fix the sleep to be dynamically triggered by a body element loading
-    sleep(2)
-    soup = BeautifulSoup(page.content(), 'lxml')
-    browser.close()
+def webquery(URL):
+    # URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        page.goto(URL)
+        # TO DO: Fix the sleep to be dynamically triggered by a body element loading
+        sleep(2)
+        soup = BeautifulSoup(page.content(), 'lxml')
+        browser.close()
+    return soup
 
-results = str(soup.ul.find_all("a"))
-result_elements = soup.ul.find_all("a")
+"""Analysis function for Penn Workday
+        returns Penn class containing jobs within
+        to do: turn output into table
+"""
 
-# Regex finds job names and links from soup
+def pennanalyze():
+    URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
+    soup = webquery(URL)
+    
+    results = str(soup.ul.find_all("a"))
+    result_elements = soup.ul       .find_all("a")
 
-links = re.findall(r'href="(/en-US.*?)"', results)
-names = re.findall(r'>([A-Za-z].*?)<', results)
+    # Regex finds job names and links from soup
 
-# Add first 6 jobs to the joblist of Penn
-Penn = Company("Penn")
+    links = re.findall(r'href="(/en-US.*?)"', results)
+    names = re.findall(r'>([A-Za-z].*?)<', results)
 
-for i in range(5):
+    # Add first 6 jobs to the joblist of Penn
+    Penn = Company("Penn")
+
+    for i in range(5):
     # This is just to catch if there are less than 6 jobs on a page
-    if names[i] == [] or links[i] == []:
-        jobhtml = '<p>None</p><br />'
-        # x = Job(title = "null", link = "null")
-    else:
-        fulllink = f'https://wd1.myworkdaysite.com{links[i]}'
-        jobhtml = f'<a href={fulllink}>{names[i]}</a><br />'
-        # x = Job(title = names[i], link = fulllink)
-    Penn.add_job(jobhtml)
+        if names[i] == [] or links[i] == []:
+            jobhtml = '<p>None</p><br />'
+            # x = Job(title = "null", link = "null")
+        else:
+            fulllink = f'https://wd1.myworkdaysite.com{links[i]}'
+            jobhtml = f'<a href={fulllink}>{names[i]}</a><br />'
+            # x = Job(title = names[i], link = fulllink)
+        Penn.add_job(jobhtml)
+
+    return Penn
 
 # print(Penn.joblist)
 
@@ -84,18 +101,19 @@ for i in range(5):
 # application with the command-line parameter
 #  --noauth_local_webserver
 
-gmail = Gmail()
+def sendreport():
+    gmail = Gmail()
 
-todays_date = date.today()
+    todays_date = date.today()
 
-params = {
-    "to": "karl+jh@themeyers.org",
-    "sender": "karl0mey@gmail.com",
-    "subject": f'Job Hunter Report {todays_date}',
-    "msg_html": f'<h1>Job Report {todays_date}</h1><br />'\
-                 '<p>Today\'s Job Report is as follows:</p><br />'\
-                 f'<h2>{Penn.name}</h2><br />'\
-                 f'{Penn.bundle()}'
-}
+    params = {
+        "to": "karl+jh@themeyers.org",
+        "sender": "karl0mey@gmail.com",
+        "subject": f'Job Hunter Report {todays_date}',
+        "msg_html": f'<h1>Job Report {todays_date}</h1><br />'\
+                    '<p>Today\'s Job Report is as follows:</p><br />'\
+                    f'<h2>{Penn.name}</h2><br />'\
+                    f'{Penn.bundle()}'
+    }
 
-message = gmail.send_message(**params)
+    message = gmail.send_message(**params)
