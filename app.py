@@ -1,11 +1,14 @@
 # import requests
 import re
 from datetime import date
+from datetime import datetime as dtm
+# import datetime as dtm
 from time import sleep
 from dataclasses import dataclass
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from simplegmail import Gmail
+# import datatable as dt
 
 # Brookings seems to have all of the job search data hidden within javascript. Skipping for now
 # URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
@@ -61,7 +64,8 @@ def webquery(URL):
         browser.close()
     return soup
 
-"""Analysis function for Penn Workday
+"""
+    Analysis function for Penn Workday
         returns Penn class containing jobs within
         to do: turn output into table
 """
@@ -102,6 +106,13 @@ def pennanalyze():
 # If your browser is on a different machine then exit and re-run this
 # application with the command-line parameter
 #  --noauth_local_webserver
+# CURRENTLY BROKEN due to auto-expiration of google cloud tokens after 7 days 
+#   (default and unchangeable for non-reviewed projects)
+
+"""
+    Sends job results via gmail
+        currently non-functional due to api key issue
+"""
 
 def sendreport(job1):
     gmail = Gmail()
@@ -120,8 +131,28 @@ def sendreport(job1):
 
     message = gmail.send_message(**params)
 
+"""
+    Temp function for saving job results as html
+        will be superseded by an email sending function
+"""
+
+def savereport(job1):
+    todays_date = date.today()
+    with open(f'TestOutput/{dtm.strftime(dtm.now(),'%m%d%y.%H%M')}.html', 'w', encoding="utf-8") as f:
+        f.write(
+            '<html><body>'
+            f'<h1>Job Report {todays_date}</h1><br />'\
+                '<p>Today\'s Job Report is as follows:</p><br />'\
+                f'<h2>{job1.name}</h2><br />'\
+                f'{job1.bundle()}'
+            '</body></html>'
+        )
+        f.close()
+        
 # What will become the main loop
 
 penndata = pennanalyze()
 
-sendreport(penndata)
+savereport(penndata)
+
+# sendreport(penndata)
