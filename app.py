@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from simplegmail import Gmail
-# import datatable as dt
+import datatable as dt
 
 # Brookings seems to have all of the job search data hidden within javascript. Skipping for now
 # URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
@@ -82,6 +82,10 @@ def pennanalyze():
     links = re.findall(r'href="(/en-US.*?)"', results)
     names = re.findall(r'>([A-Za-z].*?)<', results)
 
+    # WIP - datatable storage
+    penntable = dt.Frame(names = names, links = links)
+
+    # OLD - class based storage
     # Add first 6 jobs to the joblist of Penn
     Penn = Company("Penn")
 
@@ -98,6 +102,7 @@ def pennanalyze():
 
     return Penn
 
+print()
 # print(Penn.joblist)
 
 # Send results in email
