@@ -2,13 +2,10 @@
 import re
 from datetime import date
 from datetime import datetime as dtm
-# import datetime as dtm
 from time import sleep
-from dataclasses import dataclass
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from simplegmail import Gmail
-# import datatable as dt
 import pandas as pd
 import numpy as np
 
@@ -75,17 +72,15 @@ def pennanalyze():
 
 # Send results in email
 
-# first time this is run it prompts a login, not sure how to do this on a server
-# If your browser is on a different machine then exit and re-run this
-# application with the command-line parameter
-#  --noauth_local_webserver
-# CURRENTLY BROKEN due to auto-expiration of google cloud tokens after 7 days 
-#   (default and unchangeable for non-reviewed projects)
-
 def sendreport(job1):
     """Sends job results via gmail.
         
-        currently non-functional due to api key issue
+        currently BROKEN due to api key issue. Google cloud tokens auto-expire after 7 days,
+        which cannot be changed for non-reviewed projects.
+
+        The first time this runs it will prompt a login.
+        If you are running this remotely use the following command-line param
+            --noauth_local_webserver
     """
     gmail = Gmail()
 
