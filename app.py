@@ -70,6 +70,12 @@ def pennanalyze():
     pennhtml = createhtml(penntable)
     return pennhtml
 
+def brookingsanalyze():
+    URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
+    soup = webquery(URL)
+
+    results = soup.find_all("div", {"class": "container-fluid iCIMS_Jobstable"})
+
 # Send results in email
 
 def sendreport(job1):
@@ -117,8 +123,14 @@ def savereport(company1):
         
 # What will become the main loop
 
-penndata = pennanalyze()
+# penndata = pennanalyze()
 
-savereport(penndata)
+# savereport(penndata)
 
 # sendreport(penndata)
+
+URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
+soup = webquery(URL)
+
+results = soup.find_all("div", {"class": "container-fluid iCIMS_JobsTable"})
+print(results)
