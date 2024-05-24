@@ -16,4 +16,5 @@ pip install pytest-playwright
 playwright install
 pip install simplegmail
 pip install datatable
-``'
+pip install pandas
+```
