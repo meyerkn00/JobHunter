@@ -8,7 +8,9 @@ from dataclasses import dataclass
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from simplegmail import Gmail
-import datatable as dt
+# import datatable as dt
+import pandas as pd
+import numpy as np
 
 # Brookings seems to have all of the job search data hidden within javascript. Skipping for now
 # URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
@@ -78,31 +80,36 @@ def pennanalyze():
     result_elements = soup.ul       .find_all("a")
 
     # Regex finds job names and links from soup
-
-    links = re.findall(r'href="(/en-US.*?)"', results)
+    rawlinks = re.findall(r'href="(/en-US.*?)"', results)
+    links = [f'https://wd1.myworkdaysite.com{x}' for x in rawlinks]
     names = re.findall(r'>([A-Za-z].*?)<', results)
+ 
+    # WIP pandas dataframe
+    penntable = pd.DataFrame({
+        'names': names,
+        'links': links
+    })
 
-    # WIP - datatable storage
-    penntable = dt.Frame(names = names, links = links)
+    return penntable
 
     # OLD - class based storage
     # Add first 6 jobs to the joblist of Penn
-    Penn = Company("Penn")
+    # Penn = Company("Penn")
 
-    for i in range(5):
-    # This is just to catch if there are less than 6 jobs on a page
-        if names[i] == [] or links[i] == []:
-            jobhtml = '<p>None</p><br />'
-            # x = Job(title = "null", link = "null")
-        else:
-            fulllink = f'https://wd1.myworkdaysite.com{links[i]}'
-            jobhtml = f'<a href={fulllink}>{names[i]}</a><br />'
-            # x = Job(title = names[i], link = fulllink)
-        Penn.add_job(jobhtml)
+    # for i in range(5):
+    # # This is just to catch if there are less than 6 jobs on a page
+    #     if names[i] == [] or links[i] == []:
+    #         jobhtml = '<p>None</p><br />'
+    #         # x = Job(title = "null", link = "null")
+    #     else:
+    #         fulllink = f'https://wd1.myworkdaysite.com{links[i]}'
+    #         jobhtml = f'<a href={fulllink}>{names[i]}</a><br />'
+    #         # x = Job(title = names[i], link = fulllink)
+    #     Penn.add_job(jobhtml)
 
-    return Penn
+    # return Penn
 
-print()
+print(pennanalyze())
 # print(Penn.joblist)
 
 # Send results in email
@@ -141,23 +148,23 @@ def sendreport(job1):
         will be superseded by an email sending function
 """
 
-def savereport(job1):
+def savereport(company1):
     todays_date = date.today()
     with open(f'TestOutput/{dtm.strftime(dtm.now(),'%m%d%y.%H%M')}.html', 'w', encoding="utf-8") as f:
         f.write(
             '<html><body>'
             f'<h1>Job Report {todays_date}</h1><br />'\
                 '<p>Today\'s Job Report is as follows:</p><br />'\
-                f'<h2>{job1.name}</h2><br />'\
-                f'{job1.bundle()}'
+                f'<h2>{company1.name}</h2><br />'\
+                f'{company1.bundle()}'
             '</body></html>'
         )
         f.close()
         
 # What will become the main loop
 
-penndata = pennanalyze()
+# penndata = pennanalyze()
 
-savereport(penndata)
+# savereport(penndata)
 
 # sendreport(penndata)
