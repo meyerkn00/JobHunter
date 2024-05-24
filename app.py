@@ -18,43 +18,12 @@ import numpy as np
 
 ## Outside of central loop definitions
 
-# Output class
-"""
-    The following class takes a name input and creates
-        1. Joblist to store job results
-        2. function to add to joblist
-        3. bundle function to take all job lists and assemble into string for email
-"""
-
-class Company:
-    def __init__(self, name):
-        self.name = name
-        self.joblist = []
-        self.jobhtml = ''
+def webquery(URL):
+    """Generic function for pulling website html.
     
-    def add_job(self, joblist):
-        self.joblist.append(joblist)
-    
-    def bundle(self):
-        self.jobhtml = ''.join(self.joblist)
-        return(self.jobhtml)
-
-@dataclass
-class Job:
-    title: str
-    link: str
-    # location: str
-
-## All of this will go within a loop
-# Penn Demo using playwright
-
-"""
-    Generic function for pulling website html
         Takes URL arg
         returns html in soup form
-"""
-
-def webquery(URL):
+    """
     # URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -66,13 +35,24 @@ def webquery(URL):
         browser.close()
     return soup
 
-"""
-    Analysis function for Penn Workday
-        returns Penn class containing jobs within
-        to do: turn output into table
-"""
+
+def createhtml(company):
+    """"Roll-up" Function for company data frames.
+        
+        Takes each job and turns it into html for output
+    """
+    subset = company.iloc[0:7, :]
+    htmllist = [f'<a href={x}>{y}</a><br />' for x, y in zip(subset['links'], subset['names'])]
+    html = ''.join(htmllist)
+    return html
+
 
 def pennanalyze():
+    """Analysis function for Penn Workday.
+        
+        returns Penn class containing jobs within
+        to do: turn output into table
+    """
     URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
     soup = webquery(URL)
     
@@ -90,27 +70,8 @@ def pennanalyze():
         'links': links
     })
 
-    return penntable
-
-    # OLD - class based storage
-    # Add first 6 jobs to the joblist of Penn
-    # Penn = Company("Penn")
-
-    # for i in range(5):
-    # # This is just to catch if there are less than 6 jobs on a page
-    #     if names[i] == [] or links[i] == []:
-    #         jobhtml = '<p>None</p><br />'
-    #         # x = Job(title = "null", link = "null")
-    #     else:
-    #         fulllink = f'https://wd1.myworkdaysite.com{links[i]}'
-    #         jobhtml = f'<a href={fulllink}>{names[i]}</a><br />'
-    #         # x = Job(title = names[i], link = fulllink)
-    #     Penn.add_job(jobhtml)
-
-    # return Penn
-
-print(pennanalyze())
-# print(Penn.joblist)
+    pennhtml = createhtml(penntable)
+    return pennhtml
 
 # Send results in email
 
@@ -121,12 +82,11 @@ print(pennanalyze())
 # CURRENTLY BROKEN due to auto-expiration of google cloud tokens after 7 days 
 #   (default and unchangeable for non-reviewed projects)
 
-"""
-    Sends job results via gmail
-        currently non-functional due to api key issue
-"""
-
 def sendreport(job1):
+    """Sends job results via gmail.
+        
+        currently non-functional due to api key issue
+    """
     gmail = Gmail()
 
     todays_date = date.today()
@@ -143,28 +103,27 @@ def sendreport(job1):
 
     message = gmail.send_message(**params)
 
-"""
-    Temp function for saving job results as html
-        will be superseded by an email sending function
-"""
-
 def savereport(company1):
+    """Temp function for saving job results as html.
+        
+        will be superseded by an email sending function
+    """
     todays_date = date.today()
     with open(f'TestOutput/{dtm.strftime(dtm.now(),'%m%d%y.%H%M')}.html', 'w', encoding="utf-8") as f:
         f.write(
             '<html><body>'
             f'<h1>Job Report {todays_date}</h1><br />'\
                 '<p>Today\'s Job Report is as follows:</p><br />'\
-                f'<h2>{company1.name}</h2><br />'\
-                f'{company1.bundle()}'
+                f'<h2>University of Pennsylvania</h2><br />'\
+                f'{company1}'
             '</body></html>'
         )
         f.close()
         
 # What will become the main loop
 
-# penndata = pennanalyze()
+penndata = pennanalyze()
 
-# savereport(penndata)
+savereport(penndata)
 
 # sendreport(penndata)
