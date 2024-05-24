@@ -1,6 +1,9 @@
 # Secret Gmail Access Token (invalidates after 7 days anyway)
 client_secret.json
 
+# Test html results
+TestOutput/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
