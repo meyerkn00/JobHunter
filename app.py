@@ -1,5 +1,6 @@
 # import requests
 import re
+import requests
 from datetime import date
 from datetime import datetime as dtm
 from time import sleep
@@ -54,14 +55,13 @@ def pennanalyze():
     soup = webquery(URL)
     
     results = str(soup.ul.find_all("a"))
-    result_elements = soup.ul       .find_all("a")
 
     # Regex finds job names and links from soup
     rawlinks = re.findall(r'href="(/en-US.*?)"', results)
     links = [f'https://wd1.myworkdaysite.com{x}' for x in rawlinks]
     names = re.findall(r'>([A-Za-z].*?)<', results)
  
-    # WIP pandas dataframe
+    # pandas dataframe
     penntable = pd.DataFrame({
         'names': names,
         'links': links
@@ -70,11 +70,25 @@ def pennanalyze():
     pennhtml = createhtml(penntable)
     return pennhtml
 
-def brookingsanalyze():
+def brookanalyze():
     URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
-    soup = webquery(URL)
+    iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
 
-    results = soup.find_all("div", {"class": "container-fluid iCIMS_Jobstable"})
+    page = requests.get(iframe)
+
+    soup = BeautifulSoup(page.content, 'lxml')
+    results = str(soup.find_all("div", {"class": "col-xs-12 title"}))
+
+    links = re.findall(r'href="(.*?)"', results)
+    names = re.findall(r'title="[0-9].*? - (.*?)"', results)
+
+    brooktable = pd.DataFrame({
+            'names': names,
+            'links': links
+        })
+    
+    brookhtml = createhtml(brooktable)
+    return brookhtml
 
 # Send results in email
 
@@ -104,7 +118,7 @@ def sendreport(job1):
 
     message = gmail.send_message(**params)
 
-def savereport(company1):
+def savereport(penn, brook):
     """Temp function for saving job results as html.
         
         will be superseded by an email sending function
@@ -113,10 +127,12 @@ def savereport(company1):
     with open(f'TestOutput/{dtm.strftime(dtm.now(),'%m%d%y.%H%M')}.html', 'w', encoding="utf-8") as f:
         f.write(
             '<html><body>'
-            f'<h1>Job Report {todays_date}</h1><br />'\
-                '<p>Today\'s Job Report is as follows:</p><br />'\
-                f'<h2>University of Pennsylvania</h2><br />'\
-                f'{company1}'
+            f'<h1>Job Report {todays_date}</h1>'\
+                '<p>Today\'s Job Report is as follows:</p>'\
+                '<h2>University of Pennsylvania</h2>'\
+                f'{penn}'
+                '<h2>Brookings Institution</h2>'\
+                f'{brook}'
             '</body></html>'
         )
         f.close()
@@ -125,12 +141,6 @@ def savereport(company1):
 
 # penndata = pennanalyze()
 
-# savereport(penndata)
+savereport(pennanalyze(), brookanalyze())
 
 # sendreport(penndata)
-
-URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
-soup = webquery(URL)
-
-results = soup.find_all("div", {"class": "container-fluid iCIMS_JobsTable"})
-print(results)
