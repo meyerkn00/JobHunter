@@ -62,13 +62,13 @@ def pennanalyze():
     names = re.findall(r'>([A-Za-z].*?)<', results)
  
     # pandas dataframe
-    penntable = pd.DataFrame({
+    table = pd.DataFrame({
         'names': names,
         'links': links
     })
 
-    pennhtml = createhtml(penntable)
-    return pennhtml
+    html = createhtml(table)
+    return html
 
 def brookanalyze():
     URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
@@ -82,13 +82,28 @@ def brookanalyze():
     links = re.findall(r'href="(.*?)"', results)
     names = re.findall(r'title="[0-9].*? - (.*?)"', results)
 
-    brooktable = pd.DataFrame({
+    table = pd.DataFrame({
             'names': names,
             'links': links
         })
     
-    brookhtml = createhtml(brooktable)
-    return brookhtml
+    html = createhtml(table)
+    return html
+
+def comcastanalyze():
+    URL = "https://comcast.wd5.myworkdayjobs.com/en-US/Comcast_Careers/jobs"
+    soup = webquery(URL)
+    results = str(soup.ul.find_all("a"))
+
+    rawlinks = re.findall(r'href="(/en-US.*?)"', results)
+    links = [f'https://comcast.wd5.myworkdayjobs.com{x}' for x in rawlinks]
+    names = re.findall(r'>([A-Za-z].*?)<', results)
+    table = pd.DataFrame({
+        'names': names,
+        'links': links
+    })
+    html = createhtml(table)
+    return html
 
 # Send results in email
 
@@ -118,7 +133,7 @@ def sendreport(job1):
 
     message = gmail.send_message(**params)
 
-def savereport(penn, brook):
+def savereport():
     """Temp function for saving job results as html.
         
         will be superseded by an email sending function
@@ -130,17 +145,17 @@ def savereport(penn, brook):
             f'<h1>Job Report {todays_date}</h1>'\
                 '<p>Today\'s Job Report is as follows:</p>'\
                 '<h2>University of Pennsylvania</h2>'\
-                f'{penn}'
+                f'{pennanalyze()}'\
                 '<h2>Brookings Institution</h2>'\
-                f'{brook}'
+                f'{brookanalyze()}'\
+                '<h2>Comcast</h2>'\
+                f'{comcastanalyze()}'
             '</body></html>'
         )
         f.close()
         
-# What will become the main loop
+# Main:
 
-# penndata = pennanalyze()
-
-savereport(pennanalyze(), brookanalyze())
+savereport()
 
 # sendreport(penndata)
