@@ -46,11 +46,7 @@ def createhtml(company):
 
 
 def pennanalyze():
-    """Analysis function for Penn Workday.
-        
-        returns Penn class containing jobs within
-        to do: turn output into table
-    """
+    """Analysis function for Penn Workday."""
     URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
     soup = webquery(URL)
     
@@ -71,6 +67,7 @@ def pennanalyze():
     return html
 
 def brookanalyze():
+    """Analysis function for Brookings"""
     URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
     iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
 
@@ -91,6 +88,10 @@ def brookanalyze():
     return html
 
 def comcastanalyze():
+    """Analysis function for Comcast.
+            
+            Basically identical to Penn
+    """
     URL = "https://comcast.wd5.myworkdayjobs.com/en-US/Comcast_Careers/jobs"
     soup = webquery(URL)
     results = str(soup.ul.find_all("a"))
