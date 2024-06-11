@@ -106,9 +106,9 @@ def comcastanalyze():
     html = createhtml(table)
     return html
 
-# Send results in email
+# Deprecated - Send results via gmail
 
-def sendreport(job1):
+def sendgmail(job1):
     """Sends job results via gmail.
         
         currently BROKEN due to api key issue. Google cloud tokens auto-expire after 7 days,
@@ -134,6 +134,9 @@ def sendreport(job1):
 
     message = gmail.send_message(**params)
 
+def sendfastmail(job1):
+    pass
+
 def savereport():
     """Temp function for saving job results as html.
         
@@ -158,5 +161,3 @@ def savereport():
 # Main:
 
 savereport()
-
-# sendreport(penndata)

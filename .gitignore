@@ -1,5 +1,5 @@
-# Secret Gmail Access Token (invalidates after 7 days anyway)
-client_secret.json
+# Secret Fastmail Access Token
+fastmail_key.txt
 
 # Test html results
 TestOutput/
