@@ -19,4 +19,5 @@ pip install datatable
 # Also installs numpy
 pip install pandas
 pip install jmapc
+pip install fastapi_mail
 ```
