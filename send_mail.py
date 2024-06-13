@@ -42,7 +42,7 @@ with open(f'fastmail_key.txt', 'r', encoding="utf-8") as f:
 
 # Create and configure client
 client = Client.create_with_api_token(
-    host="https://api.fastmail.com/jmap/session", api_token=apitoken
+    host="api.fastmail.com", api_token=apitoken
 )
 
 # Retrieve the Mailbox ID for Drafts
