@@ -2,6 +2,8 @@
 
 import os
 
+from datetime import date
+
 from jmapc import (
     Address,
     Client,
@@ -82,6 +84,8 @@ assert isinstance(identity, Identity)
 
 print(f"Found identity with email address {identity.email}")
 
+todays_date = date.today()
+
 # Create and send an email
 results = client.request(
     [
@@ -93,9 +97,9 @@ results = client.request(
                         EmailAddress(name=identity.name, email=identity.email)
                     ],
                     to=[
-                        EmailAddress(name=identity.name, email=identity.email)
+                        EmailAddress(email="***REMOVED***")
                     ],
-                    subject=f"Email created with jmapc's {__file__}",
+                    subject=f"Job Hunter Report {todays_date}",
                     keywords={"$draft": True},
                     mailbox_ids={drafts_mailbox_id: True},
                     body_values=dict(
@@ -120,7 +124,7 @@ results = client.request(
                     identity_id=identity.id,
                     envelope=Envelope(
                         mail_from=Address(email=identity.email),
-                        rcpt_to=[Address(email=identity.email)],
+                        rcpt_to=[Address(email="***REMOVED***")],
                     ),
                 )
             ),
@@ -139,7 +143,7 @@ sent_data = email_send_result.created["emailToSend"]
 assert sent_data, "Error retrieving sent test email data"
 
 # Print sent email timestamp
-print(f"Test email sent to {identity.email} at {sent_data.send_at}")
+print(f"Email sent at {sent_data.send_at}")
 
 # Example output:
 #
