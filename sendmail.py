@@ -29,14 +29,14 @@ from jmapc.methods import (
     MailboxQuery,
 )
 
-TEST_EMAIL_BODY = f"""
-Hello from {__file__}!
+# TEST_EMAIL_BODY = f"""
+# Hello from {__file__}!
 
-If you're reading this email in your inbox, the example worked successfully!
+# If you're reading this email in your inbox, the example worked successfully!
 
-This email was created with the JMAP API and sent to yourself using the first
-identity's email address in your account.
-""".strip()
+# This email was created with the JMAP API and sent to yourself using the first
+# identity's email address in your account.
+# """.strip()
 
 with open(f'fastmail_key.txt', 'r', encoding="utf-8") as f:
         apitoken = f.read()
@@ -84,66 +84,70 @@ assert isinstance(identity, Identity)
 
 print(f"Found identity with email address {identity.email}")
 
-todays_date = date.today()
+def email_send(recipient, bodyhtml):
+    todays_date = date.today()
 
-# Create and send an email
-results = client.request(
-    [
-        # Create a draft email in the Drafts mailbox
-        EmailSet(
-            create=dict(
-                draft=Email(
-                    mail_from=[
-                        EmailAddress(name=identity.name, email=identity.email)
-                    ],
-                    to=[
-                        EmailAddress(email="***REMOVED***")
-                    ],
-                    subject=f"Job Hunter Report {todays_date}",
-                    keywords={"$draft": True},
-                    mailbox_ids={drafts_mailbox_id: True},
-                    body_values=dict(
-                        body=EmailBodyValue(value=TEST_EMAIL_BODY)
-                    ),
-                    text_body=[
-                        EmailBodyPart(part_id="body", type="text/plain")
-                    ],
-                    headers=[
-                        EmailHeader(name="X-jmapc-example-header", value="yes")
-                    ],
-                )
-            )
-        ),
-        # Send the created draft email, and delete from the Drafts mailbox on
-        # success
-        EmailSubmissionSet(
-            on_success_destroy_email=["#emailToSend"],
-            create=dict(
-                emailToSend=EmailSubmission(
-                    email_id="#draft",
-                    identity_id=identity.id,
-                    envelope=Envelope(
-                        mail_from=Address(email=identity.email),
-                        rcpt_to=[Address(email="***REMOVED***")],
-                    ),
+    # Create and send an email
+    results = client.request(
+        [
+            # Create a draft email in the Drafts mailbox
+            EmailSet(
+                create=dict(
+                    draft=Email(
+                        mail_from=[
+                            EmailAddress(name=identity.name, email=identity.email)
+                        ],
+                        to=[
+                            EmailAddress(email=recipient)
+                        ],
+                        subject=f"Job Hunter Report {todays_date}",
+                        keywords={"$draft": True},
+                        mailbox_ids={drafts_mailbox_id: True},
+                        body_values=dict(
+                            body=EmailBodyValue(value=bodyhtml)
+                        ),
+                        html_body = [EmailBodyPart(part_id="body", type="text/html")],
+                        # text_body=[
+                        #     EmailBodyPart(part_id="body", type="text/plain")
+                        # ],
+                        headers=[
+                            EmailHeader(name="X-jmapc-example-header", value="yes")
+                        ],
+                    )
                 )
             ),
-        ),
-    ]
-)
-# Retrieve EmailSubmission/set method response from method responses
-email_send_result = results[1].response
-assert isinstance(
-    email_send_result, EmailSubmissionSetResponse
-), f"Error sending test email: f{email_send_result}"
+            # Send the created draft email, and delete from the Drafts mailbox on
+            # success
+            EmailSubmissionSet(
+                on_success_destroy_email=["#emailToSend"],
+                create=dict(
+                    emailToSend=EmailSubmission(
+                        email_id="#draft",
+                        identity_id=identity.id,
+                        envelope=Envelope(
+                            mail_from=Address(email=identity.email),
+                            rcpt_to=[Address(email=identity.email)],
+                        ),
+                    )
+                ),
+            ),
+        ]
+    )
+    # Retrieve EmailSubmission/set method response from method responses
+    email_send_result = results[1].response
+    assert isinstance(
+        email_send_result, EmailSubmissionSetResponse
+    ), f"Error sending test email: f{email_send_result}"
 
-# Retrieve sent email metadata from EmailSubmission/set method response
-assert email_send_result.created, "Error retrieving sent test email"
-sent_data = email_send_result.created["emailToSend"]
-assert sent_data, "Error retrieving sent test email data"
+    # Retrieve sent email metadata from EmailSubmission/set method response
+    assert email_send_result.created, "Error retrieving sent test email"
+    sent_data = email_send_result.created["emailToSend"]
+    assert sent_data, "Error retrieving sent test email data"
 
-# Print sent email timestamp
-print(f"Email sent at {sent_data.send_at}")
+    # Print sent email timestamp
+    print(f"Email sent at {sent_data.send_at}")
+
+
 
 # Example output:
 #
