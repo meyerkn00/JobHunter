@@ -6,7 +6,6 @@ from datetime import datetime as dtm
 from time import sleep
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
-from simplegmail import Gmail
 import pandas as pd
 import numpy as np
 import sendmail
@@ -45,6 +44,10 @@ def createhtml(company):
     html = ''.join(htmllist)
     return html
 
+def keywordsearch(df):
+    keywords = ["Data", "Analyst", "Research"]
+    df_filtered = df[df["names"].str.contains("|".join(keywords))]
+    return df_filtered
 
 def pennanalyze():
     """Analysis function for Penn Workday."""
@@ -63,8 +66,9 @@ def pennanalyze():
         'names': names,
         'links': links
     })
+    filtered_table = keywordsearch(table)
 
-    html = createhtml(table)
+    html = createhtml(filtered_table)
     return html
 
 def brookanalyze():
@@ -84,8 +88,9 @@ def brookanalyze():
             'names': names,
             'links': links
         })
+    filtered_table = keywordsearch(table)
     
-    html = createhtml(table)
+    html = createhtml(filtered_table)
     return html
 
 def comcastanalyze():
@@ -104,7 +109,9 @@ def comcastanalyze():
         'names': names,
         'links': links
     })
-    html = createhtml(table)
+    filtered_table = keywordsearch(table)
+
+    html = createhtml(filtered_table)
     return html
 
 # Deprecated - Send results via gmail
@@ -173,3 +180,25 @@ def createhtmlbody():
 # Main:
 
 sendmail.email_send("***REMOVED***", createhtmlbody())
+
+# Testing
+
+# URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
+# iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
+
+# page = requests.get(iframe)
+
+# soup = BeautifulSoup(page.content, 'lxml')
+# results = str(soup.find_all("div", {"class": "col-xs-12 title"}))
+
+# links = re.findall(r'href="(.*?)"', results)
+# names = re.findall(r'title="[0-9].*? - (.*?)"', results)
+
+# df = pd.DataFrame({
+#         'names': names,
+#         'links': links
+#     })
+
+# keywords = ["Data", "Analyst", "Research"]
+# df_filtered = df[df["names"].str.contains("|".join(keywords))]
+# print(df_filtered)
