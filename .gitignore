@@ -1,6 +1,9 @@
 # Secret Fastmail Access Token
 fastmail_key.txt
 
+# Testing database
+db.sqlite3
+
 # Test html results
 TestOutput/
 
