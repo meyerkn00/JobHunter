@@ -10,11 +10,7 @@ import pandas as pd
 import numpy as np
 import sendmail
 
-# Brookings seems to have all of the job search data hidden within javascript. Skipping for now
-# URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
-# page = requests.get(URL)
-
-## Outside of central loop definitions
+## Function Definitions
 
 def webquery(URL):
     """Generic function for pulling website html.
@@ -71,28 +67,6 @@ def pennanalyze():
     html = createhtml(filtered_table)
     return html
 
-def brookanalyze():
-    """Analysis function for Brookings"""
-    URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
-    iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
-
-    page = requests.get(iframe)
-
-    soup = BeautifulSoup(page.content, 'lxml')
-    results = str(soup.find_all("div", {"class": "col-xs-12 title"}))
-
-    links = re.findall(r'href="(.*?)"', results)
-    names = re.findall(r'title="[0-9].*? - (.*?)"', results)
-
-    table = pd.DataFrame({
-            'names': names,
-            'links': links
-        })
-    filtered_table = keywordsearch(table)
-    
-    html = createhtml(filtered_table)
-    return html
-
 def comcastanalyze():
     """Analysis function for Comcast.
             
@@ -114,33 +88,27 @@ def comcastanalyze():
     html = createhtml(filtered_table)
     return html
 
-# Deprecated - Send results via gmail
+def brookanalyze():
+    """Analysis function for Brookings"""
+    URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
+    iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
 
-# def sendgmail(job1):
-#     """Sends job results via gmail.
-        
-#         currently BROKEN due to api key issue. Google cloud tokens auto-expire after 7 days,
-#         which cannot be changed for non-reviewed projects.
+    page = requests.get(iframe)
 
-#         The first time this runs it will prompt a login.
-#         If you are running this remotely use the following command-line param
-#             --noauth_local_webserver
-#     """
-#     gmail = Gmail()
+    soup = BeautifulSoup(page.content, 'lxml')
+    results = str(soup.find_all("div", {"class": "col-xs-12 title"}))
 
-#     todays_date = date.today()
+    links = re.findall(r'href="(.*?)"', results)
+    names = re.findall(r'title="[0-9].*? - (.*?)"', results)
 
-#     params = {
-#         "to": "karl+jh@themeyers.org",
-#         "sender": "karl0mey@gmail.com",
-#         "subject": f'Job Hunter Report {todays_date}',
-#         "msg_html": f'<h1>Job Report {todays_date}</h1><br />'\
-#                     '<p>Today\'s Job Report is as follows:</p><br />'\
-#                     f'<h2>{job1.name}</h2><br />'\
-#                     f'{job1.bundle()}'
-#     }
-
-#     message = gmail.send_message(**params)
+    table = pd.DataFrame({
+            'names': names,
+            'links': links
+        })
+    filtered_table = keywordsearch(table)
+    
+    html = createhtml(filtered_table)
+    return html
 
 def savereport():
     """Temp function for saving job results as html.
