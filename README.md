@@ -14,10 +14,8 @@ pip install requests
 # If requests works, playwright is unnecessary
 pip install pytest-playwright
 playwright install
-pip install simplegmail
-pip install datatable
 # Also installs numpy
 pip install pandas
 pip install jmapc
-pip install fastapi_mail
+pip install apsw
 ```
