@@ -182,23 +182,3 @@ def createhtmlbody():
 sendmail.email_send("karl+jh@themeyers.org", createhtmlbody())
 
 # Testing
-
-# URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
-# iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
-
-# page = requests.get(iframe)
-
-# soup = BeautifulSoup(page.content, 'lxml')
-# results = str(soup.find_all("div", {"class": "col-xs-12 title"}))
-
-# links = re.findall(r'href="(.*?)"', results)
-# names = re.findall(r'title="[0-9].*? - (.*?)"', results)
-
-# df = pd.DataFrame({
-#         'names': names,
-#         'links': links
-#     })
-
-# keywords = ["Data", "Analyst", "Research"]
-# df_filtered = df[df["names"].str.contains("|".join(keywords))]
-# print(df_filtered)
