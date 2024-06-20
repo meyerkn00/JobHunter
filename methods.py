@@ -47,7 +47,7 @@ def keywordsearch(df):
     df_filtered = df[df["names"].str.contains("|".join(keywords))]
     return df_filtered
 
-def pennanalyze():
+def penn_job_update():
     """Analysis function for Penn Workday."""
     URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
     soup = webquery(URL)
@@ -72,7 +72,7 @@ def pennanalyze():
     # html = createhtml(filtered_table)
     # return html
 
-def comcastanalyze():
+def comcast_job_update():
     """Analysis function for Comcast.
             
             Basically identical to Penn
@@ -88,12 +88,14 @@ def comcastanalyze():
         'names': names,
         'links': links
     })
-    filtered_table = keywordsearch(table)
 
-    html = createhtml(filtered_table)
-    return html
+    database.add_to_jobs(2, table)
+    # filtered_table = keywordsearch(table)
 
-def brookanalyze():
+    # html = createhtml(filtered_table)
+    # return html
+
+def brookings_job_update():
     """Analysis function for Brookings"""
     URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
     iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
@@ -110,10 +112,12 @@ def brookanalyze():
             'names': names,
             'links': links
         })
-    filtered_table = keywordsearch(table)
     
-    html = createhtml(filtered_table)
-    return html
+    database.add_to_jobs(3, table)
+    # filtered_table = keywordsearch(table)
+    
+    # html = createhtml(filtered_table)
+    # return html
 
 def savereport():
     """Temp function for saving job results as html.
@@ -136,16 +140,16 @@ def savereport():
         )
         f.close()
         
-def createhtmlbody():
-    todays_date = date.today()
-    html =  ('<html><body>'
-            f'<h1>Job Report {todays_date}</h1>'\
-                '<p>Today\'s Job Report is as follows:</p>'\
-                '<h2>University of Pennsylvania</h2>'\
-                f'{pennanalyze()}'\
-                '<h2>Brookings Institution</h2>'\
-                f'{brookanalyze()}'\
-                '<h2>Comcast</h2>'\
-                f'{comcastanalyze()}'
-            '</body></html>')
-    return html
+# def createhtmlbody():
+#     todays_date = date.today()
+#     html =  ('<html><body>'
+#             f'<h1>Job Report {todays_date}</h1>'\
+#                 '<p>Today\'s Job Report is as follows:</p>'\
+#                 '<h2>University of Pennsylvania</h2>'\
+#                 f'{pennanalyze()}'\
+#                 '<h2>Brookings Institution</h2>'\
+#                 f'{brookanalyze()}'\
+#                 '<h2>Comcast</h2>'\
+#                 f'{comcastanalyze()}'
+#             '</body></html>')
+#     return html
