@@ -32,9 +32,10 @@ print("   Using amalgamation", apsw.using_amalgamation)
 
 apsw.bestpractice.apply(apsw.bestpractice.recommended)
 
-connection = apsw.Connection("db.sqlite3")
+connection = apsw.Connection("job_listings.sqlite3")
 
 # Useful at startup to detect some database corruption
 check = connection.pragma("integrity_check")
 if check != "ok":
     print("Integrity check errors", check)
+
