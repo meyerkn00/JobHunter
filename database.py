@@ -44,11 +44,18 @@ if check != "ok":
 # Needed Queries
 
 def add_to_jobs(company_id, datatable):
-    data = [zip(datatable['names'], datatable['links'], itertools.repeat(company_id), strict = True)]
-    query = """INSERT INTO Job_Entries ("title", "url", "company_id")
+    data = [[*t] for t in zip(datatable['names'], datatable['links'], itertools.repeat(company_id))]
+    query = """INSERT OR IGNORE INTO Job_Entries ("title", "url", "company_id")
                     VALUES (?, ?, ?)"""
-    print(data)
-    # connection.executemany(query, data)
+    with connection:
+        connection.executemany(query, data)
+
+def check_db():
+    list = []
+    for row in connection.execute("""
+                        SELECT * FROM Job_Entries
+                       """):
+        print(row)
 
 # Pull company names
 # def companylist():

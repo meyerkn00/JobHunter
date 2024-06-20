@@ -16,4 +16,9 @@ import database
 
 ## New main loop
 
-methods.pennanalyze()
+# Update DB with jobs
+methods.penn_job_update() # ID 1
+methods.comcast_job_update() # ID 2
+methods.brookings_job_update() # ID 3
+
+# Pull 
