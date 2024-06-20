@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 # Custom module, see sendmail.py in main folder
 import sendmail
+import database
 
 ## Function Definitions
 
@@ -63,10 +64,13 @@ def pennanalyze():
         'names': names,
         'links': links
     })
-    filtered_table = keywordsearch(table)
 
-    html = createhtml(filtered_table)
-    return html
+    database.add_to_jobs(1, table)
+
+    # filtered_table = keywordsearch(table)
+
+    # html = createhtml(filtered_table)
+    # return html
 
 def comcastanalyze():
     """Analysis function for Comcast.
@@ -145,9 +149,3 @@ def createhtmlbody():
                 f'{comcastanalyze()}'
             '</body></html>')
     return html
-        
-# Main:
-
-sendmail.email_send("karl+jh@themeyers.org", createhtmlbody())
-
-# Testing
