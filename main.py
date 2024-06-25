@@ -21,4 +21,14 @@ methods.penn_job_update() # ID 1
 methods.comcast_job_update() # ID 2
 methods.brookings_job_update() # ID 3
 
-# Pull 
+# Pull User ID List (for now just me)
+# maybe add the check to only pull IDs with x >= 1 company attached
+userid_list = [1] # database.get_userids()
+
+for u_id in userid_list:
+    user_keywords = database.get_userkeywords(u_id)
+    user_companies = database.get_usercompanies(u_id)
+    
+    for c_id in [x[0] for x in user_companies]:
+            print(database.get_recentjobs(c_id, user_keywords))
+
