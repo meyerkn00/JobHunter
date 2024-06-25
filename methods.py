@@ -42,10 +42,10 @@ def createhtml(company):
     html = ''.join(htmllist)
     return html
 
-def keywordsearch(df):
-    keywords = ["Data", "Analyst", "Research"]
-    df_filtered = df[df["names"].str.contains("|".join(keywords))]
-    return df_filtered
+# def keywordsearch(df):
+#     keywords = ["Data", "Analyst", "Research"]
+#     df_filtered = df[df["names"].str.contains("|".join(keywords))]
+#     return df_filtered
 
 def penn_job_update():
     """Analysis function for Penn Workday."""
@@ -57,7 +57,7 @@ def penn_job_update():
     # Regex finds job names and links from soup
     rawlinks = re.findall(r'href="(/en-US.*?)"', results)
     links = [f'https://wd1.myworkdaysite.com{x}' for x in rawlinks]
-    names = re.findall(r'>([A-Za-z].*?)<', results)
+    names = re.findall(r'>(.*?)</a>', results)
  
     # pandas dataframe
     table = pd.DataFrame({
@@ -83,7 +83,7 @@ def comcast_job_update():
 
     rawlinks = re.findall(r'href="(/en-US.*?)"', results)
     links = [f'https://comcast.wd5.myworkdayjobs.com{x}' for x in rawlinks]
-    names = re.findall(r'>([A-Za-z].*?)<', results)
+    names = re.findall(r'>(.*?)</a>', results)
     table = pd.DataFrame({
         'names': names,
         'links': links
@@ -119,26 +119,26 @@ def brookings_job_update():
     # html = createhtml(filtered_table)
     # return html
 
-def savereport():
-    """Temp function for saving job results as html.
+# def savereport():
+#     """Temp function for saving job results as html.
         
-        will be superseded by an email sending function
-    """
-    todays_date = date.today()
-    with open(f'TestOutput/{dtm.strftime(dtm.now(),'%m%d%y.%H%M')}.html', 'w', encoding="utf-8") as f:
-        f.write(
-            '<html><body>'
-                f'<h1>Job Report {todays_date}</h1>'\
-                '<p>Today\'s Job Report is as follows:</p>'\
-                '<h2>University of Pennsylvania</h2>'\
-                f'{pennanalyze()}'\
-                '<h2>Brookings Institution</h2>'\
-                f'{brookanalyze()}'\
-                '<h2>Comcast</h2>'\
-                f'{comcastanalyze()}'
-            '</body></html>'
-        )
-        f.close()
+#         will be superseded by an email sending function
+#     """
+#     todays_date = date.today()
+#     with open(f'TestOutput/{dtm.strftime(dtm.now(),'%m%d%y.%H%M')}.html', 'w', encoding="utf-8") as f:
+#         f.write(
+#             '<html><body>'
+#                 f'<h1>Job Report {todays_date}</h1>'\
+#                 '<p>Today\'s Job Report is as follows:</p>'\
+#                 '<h2>University of Pennsylvania</h2>'\
+#                 f'{pennanalyze()}'\
+#                 '<h2>Brookings Institution</h2>'\
+#                 f'{brookanalyze()}'\
+#                 '<h2>Comcast</h2>'\
+#                 f'{comcastanalyze()}'
+#             '</body></html>'
+#         )
+#         f.close()
         
 # def createhtmlbody():
 #     todays_date = date.today()

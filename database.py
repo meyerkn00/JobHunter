@@ -15,26 +15,27 @@ from pathlib import Path
 import apsw.bestpractice
 
 
-# Checking APSW and Sqlite Versions
-# Where the extension module is on the filesystem
-print("      Using APSW file", apsw.__file__)
+# # Checking APSW and Sqlite Versions
+# # Where the extension module is on the filesystem
+# print("      Using APSW file", apsw.__file__)
 
-# From the extension
-print("         APSW version", apsw.apsw_version())
+# # From the extension
+# print("         APSW version", apsw.apsw_version())
 
-# From the sqlite header file at APSW compile time
-print("SQLite header version", apsw.SQLITE_VERSION_NUMBER)
+# # From the sqlite header file at APSW compile time
+# print("SQLite header version", apsw.SQLITE_VERSION_NUMBER)
 
-# The SQLite code running
-print("   SQLite lib version", apsw.sqlite_lib_version())
+# # The SQLite code running
+# print("   SQLite lib version", apsw.sqlite_lib_version())
 
-# If True then SQLite is incorporated into the extension.
-# If False then a shared library is being used, or static linking
-print("   Using amalgamation", apsw.using_amalgamation)
+# # If True then SQLite is incorporated into the extension.
+# # If False then a shared library is being used, or static linking
+# print("   Using amalgamation", apsw.using_amalgamation)
 
 apsw.bestpractice.apply(apsw.bestpractice.recommended)
 
 connection = apsw.Connection("job_listings.sqlite3")
+cursor = connection.cursor()
 
 # Useful at startup to detect some database corruption
 check = connection.pragma("integrity_check")
@@ -49,6 +50,45 @@ def add_to_jobs(company_id, datatable):
                     VALUES (?, ?, ?)"""
     with connection:
         connection.executemany(query, data)
+
+def get_userids():
+    list = cursor.execute('SELECT id FROM Users').get
+    return list
+
+def get_userkeywords(user_id):
+    list = cursor.execute(
+                        'SELECT keyword FROM Job_User_Keywords JUK'
+                            f'  WHERE JUK.user_id = {user_id}'
+                            ).get
+    return list
+
+def get_usercompanies(user_id):
+    list = cursor.execute(
+                        'SELECT UC.company_id, C.name FROM User_Companies UC'
+                            '   JOIN Companies C ON (C.id = UC.company_id)'
+                            f'  WHERE UC.user_id = {user_id}'
+                            ).get
+    return list
+
+def like_rollup(keywords):
+    list = []
+    for k in keywords:
+        if k == keywords[0]:
+            list.append(f"'%{k}%'")
+        else:
+            list.append(f"OR '%{k}%'")
+    return ' '.join(list)
+
+def get_recentjobs(company_id, keywords):
+    # Note: update with FTS5 searching once I enable it
+    list = cursor.execute(
+        'SELECT JE.title, JE.url FROM Job_Entries JE'
+            f'  WHERE JE.company_id = {company_id}'
+            f'  AND JE.title LIKE {like_rollup(keywords)}'
+            '   ORDER BY last_update DESC'
+            '   LIMIT 10'
+    ).get
+    return list
 
 def check_db():
     list = []
@@ -88,6 +128,3 @@ def check_db():
 #     connection.execute()
 #     connection.execute()
 #     connection.execute()
-
-def select_company_by_user(user_id):
-    pass
