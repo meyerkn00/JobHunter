@@ -1,8 +1,8 @@
 # Secret Fastmail Access Token
 fastmail_key.txt
 
-# Job DB - I actually do want it backed up for testing
-# job_listings.sqlite3
+# Job DB
+*.sqlite3
 
 # Test html results
 TestOutput/
