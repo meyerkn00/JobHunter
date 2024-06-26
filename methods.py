@@ -5,8 +5,7 @@ from time import sleep
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 import pandas as pd
-import numpy as np
-# Custom module, see sendmail.py in main folder
+# Custom module, see database.py in main folder
 import database
 
 ## Function Definitions
@@ -28,22 +27,6 @@ def webquery(URL):
         browser.close()
     return soup
 
-
-def createhtml(company):
-    """"Roll-up" Function for company data frames.
-        
-        Takes each job and turns it into html for output
-    """
-    subset = company.iloc[0:7, :]
-    htmllist = [f'<a href={x}>{y}</a><br />' for x, y in zip(subset['links'], subset['names'])]
-    html = ''.join(htmllist)
-    return html
-
-# def keywordsearch(df):
-#     keywords = ["Data", "Analyst", "Research"]
-#     df_filtered = df[df["names"].str.contains("|".join(keywords))]
-#     return df_filtered
-
 def penn_job_update():
     """Analysis function for Penn Workday."""
     URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
@@ -64,11 +47,6 @@ def penn_job_update():
 
     database.add_to_jobs(1, table)
 
-    # filtered_table = keywordsearch(table)
-
-    # html = createhtml(filtered_table)
-    # return html
-
 def comcast_job_update():
     """Analysis function for Comcast.
             
@@ -87,10 +65,6 @@ def comcast_job_update():
     })
 
     database.add_to_jobs(2, table)
-    # filtered_table = keywordsearch(table)
-
-    # html = createhtml(filtered_table)
-    # return html
 
 def brookings_job_update():
     """Analysis function for Brookings"""
@@ -111,42 +85,3 @@ def brookings_job_update():
         })
     
     database.add_to_jobs(3, table)
-    # filtered_table = keywordsearch(table)
-    
-    # html = createhtml(filtered_table)
-    # return html
-
-# def savereport():
-#     """Temp function for saving job results as html.
-        
-#         will be superseded by an email sending function
-#     """
-#     todays_date = date.today()
-#     with open(f'TestOutput/{dtm.strftime(dtm.now(),'%m%d%y.%H%M')}.html', 'w', encoding="utf-8") as f:
-#         f.write(
-#             '<html><body>'
-#                 f'<h1>Job Report {todays_date}</h1>'\
-#                 '<p>Today\'s Job Report is as follows:</p>'\
-#                 '<h2>University of Pennsylvania</h2>'\
-#                 f'{pennanalyze()}'\
-#                 '<h2>Brookings Institution</h2>'\
-#                 f'{brookanalyze()}'\
-#                 '<h2>Comcast</h2>'\
-#                 f'{comcastanalyze()}'
-#             '</body></html>'
-#         )
-#         f.close()
-        
-# def createhtmlbody():
-#     todays_date = date.today()
-#     html =  ('<html><body>'
-#             f'<h1>Job Report {todays_date}</h1>'\
-#                 '<p>Today\'s Job Report is as follows:</p>'\
-#                 '<h2>University of Pennsylvania</h2>'\
-#                 f'{pennanalyze()}'\
-#                 '<h2>Brookings Institution</h2>'\
-#                 f'{brookanalyze()}'\
-#                 '<h2>Comcast</h2>'\
-#                 f'{comcastanalyze()}'
-#             '</body></html>')
-#     return html
