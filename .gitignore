@@ -2,7 +2,10 @@
 fastmail_key.txt
 
 # Job DB
+job_listings.sqlite3
 *.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
 
 # Test html results
 TestOutput/
@@ -159,5 +162,3 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-job_listings.sqlite3
-*.sqlite3
