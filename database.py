@@ -52,23 +52,22 @@ def add_to_jobs(company_id, datatable):
         connection.executemany(query, data)
 
 def get_userids():
-    list = cursor.execute('SELECT id FROM Users').get
-    return list
+    query = ('SELECT U.id, U.email FROM Users U'
+                ' JOIN User_Companies UC ON (UC.user_id = U.id)'
+                ' GROUP BY U.id'
+                ' HAVING COUNT(UC.company_id) > 0')
+    return cursor.execute(query).fetchall()
 
 def get_userkeywords(user_id):
-    list = cursor.execute(
-                        'SELECT keyword FROM Job_User_Keywords JUK'
-                            f'  WHERE JUK.user_id = {user_id}'
-                            ).get
-    return list
+    query = ('SELECT keyword FROM Job_User_Keywords JUK'
+                f' WHERE JUK.user_id = {user_id}')
+    return cursor.execute(query).get
 
 def get_usercompanies(user_id):
-    list = cursor.execute(
-                        'SELECT UC.company_id, C.name FROM User_Companies UC'
-                            '   JOIN Companies C ON (C.id = UC.company_id)'
-                            f'  WHERE UC.user_id = {user_id}'
-                            ).get
-    return list
+    query = ('SELECT UC.company_id, C.name FROM User_Companies UC'
+                '  JOIN Companies C ON (C.id = UC.company_id)'
+                f' WHERE UC.user_id = {user_id}')
+    return cursor.execute(query).get
 
 def like_rollup(keywords):
     list = []
@@ -81,17 +80,18 @@ def like_rollup(keywords):
 
 def get_recentjobs(company_id, keywords):
     # Note: update with FTS5 searching once I enable it
-    list = cursor.execute(
-        'SELECT JE.title, JE.url FROM Job_Entries JE'
-            f'  WHERE JE.company_id = {company_id}'
-            f'  AND JE.title LIKE {like_rollup(keywords)}'
-            '   ORDER BY last_update DESC'
-            '   LIMIT 10'
-    ).get
-    return list
+    query = ('SELECT JE.title, JE.url FROM Job_Entries JE'
+            f' WHERE JE.company_id = {company_id}'
+            f' AND JE.title LIKE {like_rollup(keywords)}'
+            '  ORDER BY last_update DESC'
+            '  LIMIT 10')
+    result = cursor.execute(query).get
+    if result == None:
+        return []
+    else:
+        return result
 
 def check_db():
-    list = []
     for row in connection.execute("""
                         SELECT * FROM Job_Entries
                        """):
