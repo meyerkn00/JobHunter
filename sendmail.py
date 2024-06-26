@@ -29,15 +29,6 @@ from jmapc.methods import (
     MailboxQuery,
 )
 
-# TEST_EMAIL_BODY = f"""
-# Hello from {__file__}!
-
-# If you're reading this email in your inbox, the example worked successfully!
-
-# This email was created with the JMAP API and sent to yourself using the first
-# identity's email address in your account.
-# """.strip()
-
 with open(f'fastmail_key.txt', 'r', encoding="utf-8") as f:
         apitoken = f.read()
         f.close()
