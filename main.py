@@ -6,17 +6,12 @@ import database
 
 ## Main Loop
 
-# sendmail.email_send("***REMOVED***", methods.createhtmlbody())
-
-## New main loop
-
-# Update DB with jobs
+# Update job_listings db
 methods.penn_job_update() # ID 1
 methods.comcast_job_update() # ID 2
 methods.brookings_job_update() # ID 3
 
-# Pull User ID List (for now just me)
-# maybe add the check to only pull IDs with x >= 1 company attached
+# Send emails to users
 userid_list = database.get_userids()
 user_emails = [x[1] for x in userid_list]
 
