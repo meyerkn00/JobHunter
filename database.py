@@ -75,14 +75,14 @@ def like_rollup(keywords):
         if k == keywords[0]:
             list.append(f"'%{k}%'")
         else:
-            list.append(f"OR '%{k}%'")
+            list.append(f"OR JE.title LIKE '%{k}%'")
     return ' '.join(list)
 
 def get_recentjobs(company_id, keywords):
     # Note: update with FTS5 searching once I enable it
     query = ('SELECT JE.title, JE.url FROM Job_Entries JE'
-            f' WHERE JE.company_id = {company_id}'
-            f' AND JE.title LIKE {like_rollup(keywords)}'
+            f' WHERE (JE.company_id = {company_id})'
+            f' AND (JE.title LIKE {like_rollup(keywords)})'
             '  ORDER BY last_update DESC'
             '  LIMIT 10')
     result = cursor.execute(query).get
