@@ -61,7 +61,7 @@ def get_userids():
 def get_userkeywords(user_id):
     query = ('SELECT keyword FROM Job_User_Keywords JUK'
                 f' WHERE JUK.user_id = {user_id}')
-    return cursor.execute(query).fetchall()
+    return cursor.execute(query).get
 
 def get_usercompanies(user_id):
     query = ('SELECT UC.company_id, C.name FROM User_Companies UC'
