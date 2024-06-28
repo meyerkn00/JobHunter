@@ -16,7 +16,6 @@ def webquery(URL):
         Takes URL arg
         returns html in soup form
     """
-    # URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()

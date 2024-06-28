@@ -33,5 +33,4 @@ for u_id in [x[0] for x in userid_list]:
                 for i in job_tuples:
                     html.append(f'<a href={i[1]}>{i[0]}</a><br />')
     html.append('</body></html>')
-    sendmail.email_send(user_emails[u_id - 1], ''.join(html))
-
+    sendmail.email_send(user_emails[u_id - 1], ' '.join(html))

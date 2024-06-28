@@ -61,13 +61,13 @@ def get_userids():
 def get_userkeywords(user_id):
     query = ('SELECT keyword FROM Job_User_Keywords JUK'
                 f' WHERE JUK.user_id = {user_id}')
-    return cursor.execute(query).get
+    return cursor.execute(query).fetchall()
 
 def get_usercompanies(user_id):
     query = ('SELECT UC.company_id, C.name FROM User_Companies UC'
                 '  JOIN Companies C ON (C.id = UC.company_id)'
                 f' WHERE UC.user_id = {user_id}')
-    return cursor.execute(query).get
+    return cursor.execute(query).fetchall()
 
 def like_rollup(keywords):
     list = []
@@ -85,7 +85,7 @@ def get_recentjobs(company_id, keywords):
             f' AND (JE.title LIKE {like_rollup(keywords)})'
             '  ORDER BY last_update DESC'
             '  LIMIT 10')
-    result = cursor.execute(query).get
+    result = cursor.execute(query).fetchall()
     if result == None:
         return []
     else:
