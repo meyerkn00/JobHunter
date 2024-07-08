@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 import pandas as pd
 # Custom module, see database.py in main folder
-import database
+import app.database as database
 
 ## Function Definitions
 
