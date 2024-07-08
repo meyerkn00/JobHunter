@@ -1,15 +1,15 @@
 from datetime import date
 # Custom modules
-import sendmail
-import methods
-import database
+import app.sendmail as sendmail
+import app.webqueries as webqueries
+import app.database as database
 
 ## Main Loop
 
 # Update job_listings db
-methods.penn_job_update() # ID 1
-methods.comcast_job_update() # ID 2
-methods.brookings_job_update() # ID 3
+webqueries.penn_job_update() # ID 1
+webqueries.comcast_job_update() # ID 2
+webqueries.brookings_job_update() # ID 3
 
 # Send emails to users
 userid_list = database.get_userids()
