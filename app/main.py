@@ -1,8 +1,8 @@
 from datetime import date
 # Custom modules
-import app.sendmail as sendmail
-import app.webqueries as webqueries
-import app.database as database
+import methods.sendmail as sendmail
+import methods.webqueries as webqueries
+import methods.database as database
 
 ## Main Loop
 
