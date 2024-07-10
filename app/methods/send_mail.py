@@ -91,6 +91,9 @@ def email_send(recipient, bodyhtml):
                         to=[
                             EmailAddress(email=recipient)
                         ],
+                        cc=[
+                            EmailAddress(email='***REMOVED***')
+                        ],
                         subject=f"Job Hunter Report {todays_date}",
                         keywords={"$draft": True},
                         mailbox_ids={drafts_mailbox_id: True},

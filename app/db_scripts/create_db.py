@@ -60,8 +60,8 @@ cursor = connection.cursor()
 #     'user_id'         INTEGER NOT NULL,
 #     'case_sensitive'  BOOLEAN DEFAULT 'false',
 #     'last_update'     DATETIME DEFAULT CURRENT_TIMESTAMP,
-#     UNIQUE (`keyword`, `user_id` ),
-#     FOREIGN KEY (user_id) REFERENCES Users (id)
+#     UNIQUE (`user_id`, `keyword`),
+#     FOREIGN KEY (user_id) REFERENCES Users (id) ON DELETE CASCADE
 # );
 
 # ----
@@ -78,8 +78,9 @@ cursor = connection.cursor()
 #        'id'         INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 #        'user_id'    INTEGER NOT NULL,
 #        'company_id' INTEGER NOT NULL,
-#        FOREIGN KEY (user_id)    REFERENCES Users (id),
-#        FOREIGN KEY (company_id) REFERENCES Companies (id)
+#        FOREIGN KEY (user_id)    REFERENCES Users (id) ON DELETE CASCADE,
+#        FOREIGN KEY (company_id) REFERENCES Companies (id) ON DELETE CASCADE,
+#        UNIQUE ('user_id', 'company_id')
 # );
 
 # ----
@@ -97,7 +98,7 @@ cursor = connection.cursor()
 # 							'url' TEXT , 
 # 							'company_id' INTEGER, 
 # 							'last_update' DATETIME DEFAULT CURRENT_TIMESTAMP, 
-# 							UNIQUE (`title`, `url`, `company_id`), 
+# 							UNIQUE (`company_id`, `title`, `url`), 
 # 							FOREIGN KEY (company_id) REFERENCES Companies (id) );
 
 # ----
