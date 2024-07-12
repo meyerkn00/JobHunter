@@ -1,6 +1,9 @@
 # Secret Fastmail Access Token
 fastmail_key.txt
 
+# DB backups
+db_backups/
+
 #.venv
 .venv/
 
@@ -168,5 +171,3 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-app/db_scripts/New_Job_Listings_2024-07-09.dump.sql
-app/db_scripts/Job_Listings_Full.sql
