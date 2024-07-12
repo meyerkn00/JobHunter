@@ -10,4 +10,4 @@ cursor = connection.cursor()
 
 # This file CLEARS the job database. Only run if you want to do that.
 
-cursor.execute("""DELETE FROM "Job_Entries" WHERE ("rowid" > 0)""")
+cursor.execute("DELETE FROM Job_Entries")
