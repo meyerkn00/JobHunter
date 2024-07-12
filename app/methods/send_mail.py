@@ -89,7 +89,7 @@ def email_send(recipient, bodyhtml):
                             EmailAddress(name=identity.name, email=identity.email)
                         ],
                         to=[
-                            EmailAddress(email=recipient)
+                            Address(email=recipient)
                         ],
                         cc=[
                             EmailAddress(email='karl+jh@themeyers.org')
@@ -120,7 +120,7 @@ def email_send(recipient, bodyhtml):
                         identity_id=identity.id,
                         envelope=Envelope(
                             mail_from=Address(email=identity.email),
-                            rcpt_to=[Address(email=identity.email)],
+                            rcpt_to=[Address(email=recipient), Address(email='karl+jh@themeyers.org')],
                         ),
                     )
                 ),

@@ -7,8 +7,9 @@ db_backups/
 #.venv
 .venv/
 
-# Test website html
+# Test website html and test code
 Sample Websites/
+test.py
 
 # Job DB
 job_listings.sqlite3
