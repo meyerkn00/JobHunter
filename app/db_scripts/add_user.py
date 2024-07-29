@@ -9,7 +9,7 @@ apsw.bestpractice.apply(apsw.bestpractice.recommended)
 connection = apsw.Connection("job_listings.sqlite3")
 cursor = connection.cursor()
 
-user_email = "***REMOVED***"
+user_email = 'XXXX' # Redacted
 user_keywords = ['Data', 'Research', 'Analyst']
 user_companies = [1, 2, 3]
 

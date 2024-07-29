@@ -10,6 +10,7 @@ db_backups/
 # Test website html and test code
 Sample Websites/
 test.py
+app/db_scripts/create_db.py
 
 # Job DB
 job_listings.sqlite3
