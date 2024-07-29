@@ -27,7 +27,7 @@ def webquery(URL):
     return soup
 
 def penn_job_update():
-    """Analysis function for Penn Workday."""
+    """Job update function for Penn Workday."""
     URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
     soup = webquery(URL)
     
@@ -47,7 +47,7 @@ def penn_job_update():
     database.add_to_jobs(1, table)
 
 def comcast_job_update():
-    """Analysis function for Comcast.
+    """Job update function for Comcast.
             
             Basically identical to Penn
     """
@@ -66,7 +66,7 @@ def comcast_job_update():
     database.add_to_jobs(2, table)
 
 def brookings_job_update():
-    """Analysis function for Brookings"""
+    """Job update function for Brookings"""
     URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
     iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
 
@@ -84,3 +84,23 @@ def brookings_job_update():
         })
     
     database.add_to_jobs(3, table)
+
+def reliance_job_update():
+    """Job update function for Reliance Standard"""
+    URL = "https://rsli.wd5.myworkdayjobs.com/en-US/RSLIJobs"
+    soup = webquery(URL)
+    
+    results = str(soup.ul.find_all("a"))
+
+    # Regex finds job names and links from soup
+    rawlinks = re.findall(r'href="(/en-US.*?)"', results)
+    links = [f'https://wd1.myworkdaysite.com{x}' for x in rawlinks]
+    names = re.findall(r'>(.*?)</a>', results)
+ 
+    # pandas dataframe
+    table = pd.DataFrame({
+        'names': names,
+        'links': links
+    })
+
+    database.add_to_jobs(4, table)
