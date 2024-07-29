@@ -92,7 +92,7 @@ def email_send(recipient, bodyhtml):
                             Address(email=recipient)
                         ],
                         cc=[
-                            EmailAddress(email='karl+jh@themeyers.org')
+                            EmailAddress(name=identity.name, email=identity.email)
                         ],
                         subject=f"Job Hunter Report {todays_date}",
                         keywords={"$draft": True},
