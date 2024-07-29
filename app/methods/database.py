@@ -5,7 +5,9 @@ from typing import Optional, Iterator, Any
 import os
 import sys
 import time
-import datetime
+from datetime import datetime
+from datetime import timezone
+from datetime import timedelta
 import apsw
 import apsw.ext
 import random
@@ -69,7 +71,7 @@ def get_usercompanies(user_id):
                 f' WHERE UC.user_id = {user_id}')
     return cursor.execute(query).fetchall()
 
-def like_rollup(keywords):
+def keyword_list(keywords):
     list = []
     for k in keywords:
         if k == keywords[0]:
@@ -80,9 +82,12 @@ def like_rollup(keywords):
 
 def get_recentjobs(company_id, keywords):
     # Note: update with FTS5 searching once I enable it
+    current_utc_timestamp = datetime.now(tz=timezone.utc)
+    one_week_ago = current_utc_timestamp - datetime.timedelta(weeks = 1)
     query = ('SELECT JE.title, JE.url FROM Job_Entries JE'
             f' WHERE (JE.company_id = {company_id})'
-            f' AND (JE.title LIKE {like_rollup(keywords)})'
+            f' WHERE (last_update > {one_week_ago})'
+            f' AND (JE.title LIKE {keyword_list(keywords)})'
             '  ORDER BY last_update DESC'
             '  LIMIT 10')
     result = cursor.execute(query).fetchall()
