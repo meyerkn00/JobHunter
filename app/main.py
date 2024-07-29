@@ -10,6 +10,7 @@ import methods.database as database
 web_queries.penn_job_update() # ID 1
 web_queries.comcast_job_update() # ID 2
 web_queries.brookings_job_update() # ID 3
+web_queries.reliance_job_update() # ID 4
 
 # Send emails to users
 userid_dict = dict(database.get_userids())
