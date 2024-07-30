@@ -1,4 +1,3 @@
-# import requests
 import re
 import requests
 from time import sleep
@@ -70,7 +69,7 @@ def brookings_job_update():
     URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
     iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
 
-    page = requests.get(iframe)
+    page = requests.get(iframe, timeout=0.1)
 
     soup = BeautifulSoup(page.content, 'lxml')
     results = str(soup.find_all("div", {"class": "col-xs-12 title"}))
@@ -94,7 +93,7 @@ def reliance_job_update():
 
     # Regex finds job names and links from soup
     rawlinks = re.findall(r'href="(/en-US.*?)"', results)
-    links = [f'https://wd1.myworkdaysite.com{x}' for x in rawlinks]
+    links = [f'https://rsli.wd5.myworkdayjobs.com{x}' for x in rawlinks]
     names = re.findall(r'>(.*?)</a>', results)
  
     # pandas dataframe
