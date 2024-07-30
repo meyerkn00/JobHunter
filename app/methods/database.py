@@ -62,14 +62,14 @@ def get_userids():
 
 def get_userkeywords(user_id):
     query = ('SELECT keyword FROM Job_User_Keywords JUK'
-                f' WHERE JUK.user_id = {user_id}')
-    return cursor.execute(query).get
+                f' WHERE JUK.user_id = ?')
+    return cursor.execute(query, (user_id,)).get
 
 def get_usercompanies(user_id):
     query = ('SELECT UC.company_id, C.name FROM User_Companies UC'
                 '  JOIN Companies C ON (C.id = UC.company_id)'
-                f' WHERE UC.user_id = {user_id}')
-    return cursor.execute(query).fetchall()
+                f' WHERE UC.user_id = ?')
+    return cursor.execute(query, (user_id,)).fetchall()
 
 def keyword_list(keywords):
     list = []
@@ -80,17 +80,17 @@ def keyword_list(keywords):
             list.append(f"OR JE.title LIKE '%{k}%'")
     return ' '.join(list)
 
-def get_recentjobs(company_id, keywords):
+def get_recent_jobs(company_id, keywords):
     # Note: update with FTS5 searching once I enable it
-    current_utc_timestamp = datetime.now(tz=timezone.utc)
-    one_week_ago = current_utc_timestamp - datetime.timedelta(weeks = 1)
+    one_week_ago = datetime.now(tz=timezone.utc) - timedelta(weeks = 1)
+    one_week_ago_str = one_week_ago.strftime("%Y-%m-%d %H:%M:%S")
     query = ('SELECT JE.title, JE.url FROM Job_Entries JE'
-            f' WHERE (JE.company_id = {company_id})'
-            f' WHERE (last_update > {one_week_ago})'
+            f' WHERE (JE.company_id = ?)'
+            f' AND (JE.last_update > ?)'
             f' AND (JE.title LIKE {keyword_list(keywords)})'
             '  ORDER BY last_update DESC'
             '  LIMIT 10')
-    result = cursor.execute(query).fetchall()
+    result = cursor.execute(query, (company_id, one_week_ago_str)).fetchall()
     if result == None:
         return []
     else:
