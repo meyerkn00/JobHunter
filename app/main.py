@@ -26,7 +26,7 @@ for u_id in list(userid_dict):
             '<p>Today\'s Job Report is as follows:</p>'
             ]
     for c_id in [z[0] for z in user_companies]:
-            job_tuples = database.get_recentjobs(c_id, user_keywords)
+            job_tuples = database.get_recent_jobs(c_id, user_keywords)
             html.append(f'<h2>{company_names[c_id - 1]}</h2>')
             if job_tuples == []:
                   html.append('<p>No Jobs Found Matching Keywords</p>')
