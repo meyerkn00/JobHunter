@@ -20,7 +20,7 @@ def webquery(URL):
         page = browser.new_page()
         page.goto(URL)
         # TO DO: Fix the sleep to be dynamically triggered by a body element loading
-        sleep(2)
+        page.wait_for_timeout(2000)
         soup = BeautifulSoup(page.content(), 'lxml')
         browser.close()
     return soup
@@ -69,7 +69,7 @@ def brookings_job_update():
     URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
     iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
 
-    page = requests.get(iframe, timeout=0.1)
+    page = requests.get(iframe, timeout=10)
 
     soup = BeautifulSoup(page.content, 'lxml')
     results = str(soup.find_all("div", {"class": "col-xs-12 title"}))
@@ -103,3 +103,9 @@ def reliance_job_update():
     })
 
     database.add_to_jobs(4, table)
+
+def update_job_db():
+    penn_job_update() # ID 1
+    brookings_job_update() # ID 2
+    comcast_job_update() # ID 3
+    reliance_job_update() # ID 4

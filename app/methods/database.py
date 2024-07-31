@@ -58,7 +58,7 @@ def get_userids():
                 ' JOIN User_Companies UC ON (UC.user_id = U.id)'
                 ' GROUP BY U.id'
                 ' HAVING COUNT(UC.company_id) > 0')
-    return cursor.execute(query).fetchall()
+    return dict(cursor.execute(query).fetchall())
 
 def get_userkeywords(user_id):
     query = ('SELECT keyword FROM Job_User_Keywords JUK'

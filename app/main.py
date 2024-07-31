@@ -7,14 +7,11 @@ import methods.database as database
 ## Main Loop
 
 # Update job_listings db
-web_queries.penn_job_update() # ID 1
-web_queries.comcast_job_update() # ID 2
-web_queries.brookings_job_update() # ID 3
-web_queries.reliance_job_update() # ID 4
+web_queries.update_job_db()
 
 # Send emails to users
-userid_dict = dict(database.get_userids())
-# user_emails = [x[1] for x in userid_list]
+userid_dict = database.get_userids()
+
 
 for u_id in list(userid_dict):
     todays_date = date.today()
