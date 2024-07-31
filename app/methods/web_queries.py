@@ -2,71 +2,66 @@ import re
 import requests
 from time import sleep
 from bs4 import BeautifulSoup
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 import pandas as pd
 # Custom module, see database.py in main folder
 import methods.database as database
 
 ## Function Definitions
 
-def webquery(URL):
+def webquery(url):
     """Generic function for pulling website html.
     
-        Takes URL arg
+        Takes url arg
         returns html in soup form
     """
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
-        page.goto(URL)
+        page.goto(url)
         # TO DO: Fix the sleep to be dynamically triggered by a body element loading
-        page.wait_for_timeout(2000)
+        # page.wait_for_timeout(2000)
+        # expect(page.locator('id=root')).not_to_be_empty()
+        expect(page.get_by_role("listitem").first).not_to_be_empty()
         soup = BeautifulSoup(page.content(), 'lxml')
         browser.close()
     return soup
 
-def penn_job_update():
-    """Job update function for Penn Workday."""
-    URL = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
-    soup = webquery(URL)
-    
+def workday_update(url, urlsnippet):
+    soup = webquery(url)
+
     results = str(soup.ul.find_all("a"))
 
     # Regex finds job names and links from soup
     rawlinks = re.findall(r'href="(/en-US.*?)"', results)
-    links = [f'https://wd1.myworkdaysite.com{x}' for x in rawlinks]
+    links = [f'{urlsnippet}{x}' for x in rawlinks]
     names = re.findall(r'>(.*?)</a>', results)
- 
-    # pandas dataframe
+    
     table = pd.DataFrame({
         'names': names,
         'links': links
     })
 
-    database.add_to_jobs(1, table)
+    return table
+
+def penn_job_update():
+    # """Job update function for Penn Workday."""
+    url = "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn/"
+    urlsnippet = 'https://wd1.myworkdaysite.com'
+    database.add_to_jobs(1, workday_update(url, urlsnippet))
 
 def comcast_job_update():
     """Job update function for Comcast.
             
             Basically identical to Penn
     """
-    URL = "https://comcast.wd5.myworkdayjobs.com/en-US/Comcast_Careers/jobs"
-    soup = webquery(URL)
-    results = str(soup.ul.find_all("a"))
-
-    rawlinks = re.findall(r'href="(/en-US.*?)"', results)
-    links = [f'https://comcast.wd5.myworkdayjobs.com{x}' for x in rawlinks]
-    names = re.findall(r'>(.*?)</a>', results)
-    table = pd.DataFrame({
-        'names': names,
-        'links': links
-    })
-
-    database.add_to_jobs(2, table)
+    url = "https://comcast.wd5.myworkdayjobs.com/en-US/Comcast_Careers/jobs"
+    urlsnippet = 'https://comcast.wd5.myworkdayjobs.com'
+    database.add_to_jobs(2, workday_update(url, urlsnippet))
 
 def brookings_job_update():
     """Job update function for Brookings"""
-    URL = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
+    url = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
     iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
 
     page = requests.get(iframe, timeout=10)
@@ -86,23 +81,9 @@ def brookings_job_update():
 
 def reliance_job_update():
     """Job update function for Reliance Standard"""
-    URL = "https://rsli.wd5.myworkdayjobs.com/en-US/RSLIJobs"
-    soup = webquery(URL)
-    
-    results = str(soup.ul.find_all("a"))
-
-    # Regex finds job names and links from soup
-    rawlinks = re.findall(r'href="(/en-US.*?)"', results)
-    links = [f'https://rsli.wd5.myworkdayjobs.com{x}' for x in rawlinks]
-    names = re.findall(r'>(.*?)</a>', results)
- 
-    # pandas dataframe
-    table = pd.DataFrame({
-        'names': names,
-        'links': links
-    })
-
-    database.add_to_jobs(4, table)
+    url = "https://rsli.wd5.myworkdayjobs.com/en-US/RSLIJobs"
+    urlsnippet = 'https://rsli.wd5.myworkdayjobs.com'
+    database.add_to_jobs(4, workday_update(url, urlsnippet))
 
 def update_job_db():
     penn_job_update() # ID 1
