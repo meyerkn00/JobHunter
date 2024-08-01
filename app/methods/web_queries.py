@@ -9,7 +9,7 @@ import methods.database as database
 
 ## Function Definitions
 
-def webquery(url):
+def webquery(url, isworkday = False):
     """Generic function for pulling website html.
     
         Takes url arg
@@ -19,16 +19,16 @@ def webquery(url):
         browser = p.chromium.launch()
         page = browser.new_page()
         page.goto(url)
-        # TO DO: Fix the sleep to be dynamically triggered by a body element loading
-        # page.wait_for_timeout(2000)
-        # expect(page.locator('id=root')).not_to_be_empty()
-        expect(page.get_by_role("listitem").first).not_to_be_empty()
+        if isworkday == True:
+            expect(page.get_by_role("listitem").first).not_to_be_empty()
+        else:
+            page.wait_for_timeout(2000)
         soup = BeautifulSoup(page.content(), 'lxml')
         browser.close()
     return soup
 
 def workday_update(url, urlsnippet):
-    soup = webquery(url)
+    soup = webquery(url, True)
 
     results = str(soup.ul.find_all("a"))
 
