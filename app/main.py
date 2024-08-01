@@ -1,11 +1,12 @@
 from datetime import date
+import time
 # Custom modules
 import methods.send_mail as send_mail
 import methods.web_queries as web_queries
 import methods.database as database
 
 ## Main Loop
-
+start = time.time()
 # Update job_listings db
 web_queries.update_job_db()
 
@@ -32,3 +33,5 @@ for u_id in list(userid_dict):
                     html.append(f'<a href={i[1]}>{i[0]}</a><br />')
     html.append('</body></html>')
     send_mail.email_send(userid_dict[u_id], ' '.join(html))
+end = time.time()
+print(f'Time taken was {end-start} seconds')
