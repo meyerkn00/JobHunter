@@ -29,19 +29,12 @@ def webquery(url, isworkday = False):
 
 def workday_update(url, urlsnippet):
     soup = webquery(url, True)
-
     results = str(soup.ul.find_all("a"))
-
     # Regex finds job names and links from soup
     rawlinks = re.findall(r'href="(/en-US.*?)"', results)
     links = [f'{urlsnippet}{x}' for x in rawlinks]
-    names = re.findall(r'>(.*?)</a>', results)
-    
-    table = pd.DataFrame({
-        'names': names,
-        'links': links
-    })
-
+    names = re.findall(r'>(.*?)</a>', results)    
+    table = pd.DataFrame({'names': names, 'links': links})
     return table
 
 def penn_job_update():
@@ -63,20 +56,12 @@ def brookings_job_update():
     """Job update function for Brookings"""
     url = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078"
     iframe = "https://careers-brookings.icims.com/jobs/search?ss=1&hashed=-435682078&in_iframe=1"
-
     page = requests.get(iframe, timeout=10)
-
     soup = BeautifulSoup(page.content, 'lxml')
     results = str(soup.find_all("div", {"class": "col-xs-12 title"}))
-
     links = re.findall(r'href="(.*?)"', results)
     names = re.findall(r'title="[0-9].*? - (.*?)"', results)
-
-    table = pd.DataFrame({
-            'names': names,
-            'links': links
-        })
-    
+    table = pd.DataFrame({'names': names, 'links': links}) 
     database.add_to_jobs(3, table)
 
 def reliance_job_update():

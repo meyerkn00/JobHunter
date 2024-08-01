@@ -6,7 +6,7 @@ import methods.web_queries as web_queries
 import methods.database as database
 
 ## Main Loop
-start = time.time()
+# start = time.time()
 # Update job_listings db
 web_queries.update_job_db()
 
@@ -19,10 +19,11 @@ for u_id in list(userid_dict):
     user_keywords = database.get_userkeywords(u_id)
     user_companies = database.get_usercompanies(u_id)
     company_names = [y[1] for y in user_companies]
-    html = ['<html><body>',
-            f'<h1>Job Report {todays_date}</h1>',
-            '<p>Today\'s Job Report is as follows:</p>'
-            ]
+    html = [
+        '<html><body>',
+        f'<h1>Job Report {todays_date}</h1>',
+        '<p>Today\'s Job Report is as follows:</p>'
+    ]
     for c_id in [z[0] for z in user_companies]:
             job_tuples = database.get_recent_jobs(c_id, user_keywords)
             html.append(f'<h2>{company_names[c_id - 1]}</h2>')
@@ -33,5 +34,6 @@ for u_id in list(userid_dict):
                     html.append(f'<a href={i[1]}>{i[0]}</a><br />')
     html.append('</body></html>')
     send_mail.email_send(userid_dict[u_id], ' '.join(html))
-end = time.time()
-print(f'Time taken was {end-start} seconds')
+
+# end = time.time()
+# print(f'Time taken was {end-start} seconds')
