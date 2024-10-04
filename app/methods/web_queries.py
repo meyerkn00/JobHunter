@@ -70,8 +70,21 @@ def reliance_job_update():
     urlsnippet = 'https://rsli.wd5.myworkdayjobs.com'
     database.add_to_jobs(4, workday_update(url, urlsnippet))
 
+def drexel_job_update():
+    """Job update function for Drexel"""
+    url = 'https://careers.drexel.edu/en-us/listing/'
+    urlsnippet = 'https://careers.drexel.edu'
+    soup = webquery(url)
+    results = str(soup.tbody.find_all("a"))
+    rawlinks = re.findall(r'href="(/en-us.*?)"', results)
+    links = [f'{urlsnippet}{x}' for x in rawlinks]
+    names = re.findall(r'>(.*?)</a>', results)    
+    table = pd.DataFrame({'names': names, 'links': links})
+    database.add_to_jobs(5, table)
+
 def update_job_db():
     penn_job_update() # ID 1
     brookings_job_update() # ID 2
     comcast_job_update() # ID 3
     reliance_job_update() # ID 4
+    drexel_job_update() # ID 5
