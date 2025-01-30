@@ -26,12 +26,19 @@ for u_id in list(userid_dict):
     ]
     for c_id in [z[0] for z in user_companies]:
             job_tuples = database.get_recent_jobs(c_id, user_keywords)
-            html.append(f'<h2>{company_names[c_id - 1]}</h2>')
+            html.append(
+                 f'<h2>{company_names[c_id - 1]}</h2>'
+                         )
+            html.append('<ul>')
             if job_tuples == []:
-                  html.append('<p>No Jobs Found Matching Keywords</p>')
+                  html.append("""
+                        </ul>
+                        <p>No Jobs Found Matching Keywords<p>
+                        """)
             else:
                 for i in job_tuples:
-                    html.append(f'<a href={i[1]}>{i[0]}</a><br />')
+                    html.append(f'<li><a href={i[1]}>{i[0]}</a><br /></li>')
+            html.append('</ul>')
     html.append('</body></html>')
     send_mail.email_send(userid_dict[u_id], ' '.join(html))
 

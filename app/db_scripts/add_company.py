@@ -9,9 +9,9 @@ apsw.bestpractice.apply(apsw.bestpractice.recommended)
 connection = apsw.Connection("job_listings.sqlite3")
 cursor = connection.cursor()
 
-company_name = 'Reliance Standard'
-company_url = 'https://rsli.wd5.myworkdayjobs.com/en-US/RSLIJobs'
-users_associated = [1, 3]
+company_name = 'Drexel'
+company_url = 'https://careers.drexel.edu/en-us/listing/'
+users_associated = [1, 2]
 
 def create_company_id(company_name, company_url):
     company_id = connection.execute(
