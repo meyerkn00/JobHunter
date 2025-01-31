@@ -7,7 +7,7 @@ import apsw.bestpractice
     Edit the variable below with the User_id of the user you would like to turn off
 """
 
-USER_ID = [2]
+USER_ID = [1]
 
 apsw.bestpractice.apply(apsw.bestpractice.recommended)
 
@@ -17,7 +17,7 @@ cursor = connection.cursor()
 query = (
     """
         UPDATE Users
-            SET active = 1
+            SET active = 0
             WHERE id = ?;
     """
 )

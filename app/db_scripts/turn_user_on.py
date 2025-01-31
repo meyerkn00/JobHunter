@@ -7,7 +7,7 @@ import apsw.bestpractice
     Edit the variable below with the User_id of the user you would like to turn on
 """
 
-USER_ID = [2]
+USER_ID = [1]
 
 apsw.bestpractice.apply(apsw.bestpractice.recommended)
 
