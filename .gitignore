@@ -4,6 +4,10 @@ fastmail_key.txt
 # DB backups
 db_backups/
 
+# Mac background files
+*.DS_Store
+app/.DS_Store
+
 #.venv
 .venv/
 

@@ -62,10 +62,16 @@ def get_userids():
     query = (
         'SELECT U.id, U.email FROM Users U'
             ' JOIN User_Companies UC ON (UC.user_id = U.id)'
+            ' WHERE U.active == 1'
             ' GROUP BY U.id'
             ' HAVING COUNT(UC.company_id) > 0'
     )
-    return dict(cursor.execute(query).fetchall())
+    result = dict(cursor.execute(query).fetchall())
+    if result != []:
+        return result
+    else:
+        return None
+    #return dict(cursor.execute(query).fetchall())
 
 def get_userkeywords(user_id):
     query = (
