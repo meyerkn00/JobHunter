@@ -1,7 +1,0 @@
-apsw==3.46.0.1
-beautifulsoup4==4.12.3
-jmapc==0.2.22
-lxml==5.2.1
-pandas==2.2.2
-playwright==1.43.0
-Requests==2.32.3

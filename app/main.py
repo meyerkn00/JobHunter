@@ -27,9 +27,7 @@ def main_loop(userid_dict):
         ]
         for c_id in [z[0] for z in user_companies]:
                 job_tuples = database.get_recent_jobs(c_id, user_keywords)
-                html.append(
-                    f'<h2>{company_names[c_id - 1]}</h2>'
-                            )
+                html.append(f'<h2>{company_names[c_id - 1]}</h2>')
                 html.append('<ul>')
                 if job_tuples == []:
                     html.append("""
