@@ -14,7 +14,7 @@ company_url = 'https://careers.drexel.edu/en-us/listing/'
 users_associated = [1, 2]
 
 def create_company_id(company_name, company_url):
-    company_id = connection.execute(
+    company_id = cursor.execute(
         "INSERT INTO Companies ('name', 'url')"
         f"    VALUES ('{company_name}','{company_url}')"
         "     RETURNING Companies.id"

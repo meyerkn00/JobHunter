@@ -4,7 +4,7 @@ import apsw.ext
 import apsw.bestpractice
 
 """
-    Edit the variable below with the User_id of the user you would like to turn off
+    Edit the variable below with the User_id of the user you would like to turn on
 """
 
 USER_ID = [2]
@@ -22,4 +22,4 @@ query = (
     """
 )
 cursor.execute(query, USER_ID)
-print(f'Deactivated User {USER_ID}')
+print(f'Activated User {USER_ID}')
